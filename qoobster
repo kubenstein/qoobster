@@ -1,0 +1,63 @@
+#!/bin/bash
+
+#
+# new qoobster's (probably unstable) engine for new rapid
+#
+
+echo "
+
+			*****************************
+			**         Qoobster        **
+			**         v 2.0.0         **
+			**         unstable        **
+			**   s6052@pjwstk.edu.pl   **
+ 			*****************************
+
+
+"
+
+while  [ $# -ne 0 ] ;
+do	 	
+
+	PLIK=$1
+
+	NAZWA=`echo $PLIK | rev | cut -d"/" -f1 | rev`
+	NR=`echo $PLIK | rev | cut -d"/" -f2 | rev`
+
+	echo " - plik: $NAZWA"
+
+	CZEKAC=1
+		while [ $CZEKAC -eq 1 ];
+		do
+		ODP=`wget -q -O- "http://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=download_v1&fileid=$NR&filename=$NAZWA&try=1&cbf=RSAPIDispatcher&cbid=1"`
+
+			if [ `echo $ODP | grep "You need to wait" | wc -l` -eq 1 ] ; then 
+			TIME=`echo $ODP | cut -d" " -f5`
+				i=0
+				for (( i=1; i<=$TIME; i++ ))
+				do
+				sleep 1
+				echo -e -n "\r - zajete czekam "$[ TIME - $i ]"s   "	
+				done
+			echo ""
+			else
+			CZEKAC=0
+			fi
+		done
+
+
+	SERVER=`echo $ODP | cut -d":" -f2 | cut -d"," -f1`
+	AUTH=`echo $ODP | cut -d":" -f2 | cut -d"," -f2`
+	TIME=`echo $ODP | cut -d":" -f2 | cut -d"," -f3`
+	SERVSHORT=`echo $SERVER | rev | cut -d"." -f1 | rev`
+
+		i=0
+		for (( i=1; i<=$TIME; i++ ))
+		do
+		sleep 1
+		echo -e -n "\r - czekam "$[ TIME - $i ]"s   "	
+		done
+
+	wget -O$NAZWA 'http://'$SERVER'/cgi-bin/rsapi.cgi?sub=download_v1&editparentlocation=0&bin=1&fileid='$NR'&filename='$NAZWA'&dlauth='$AUTH'#!download|'$SERVSHORT'|'$NR'|'$NAZWA'|'
+	shift
+done
