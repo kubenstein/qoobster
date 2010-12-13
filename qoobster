@@ -16,6 +16,37 @@ echo "
 
 "
 
+
+# function runs automatically after each successful download
+# file's url being param
+# remember that each function must have at least one command
+function afterSuccessfulDownloadingFile() {
+
+true
+}
+
+
+
+# function runs automatically after each failed download
+# file's url being param
+# remember that each function must have at least one command
+function afterFailedDownloadingFile() {
+echo "skip $1" >> skipped.txt
+
+true
+}
+
+
+# function runs automatically in the end of the Qoobster
+# list of urls is a param
+# remember that each function must have at least one command
+ALL=$@
+function afterAll() {
+
+true
+}
+
+
 while  [ $# -ne 0 ] ;
 do	 	
 
@@ -24,7 +55,7 @@ do
 	NAZWA=`echo $PLIK | rev | cut -d"/" -f1 | rev`
 	NR=`echo $PLIK | rev | cut -d"/" -f2 | rev`
 
-	echo " - plik: $NAZWA"
+	echo -e " - plik:\n$PLIK"
 
 	CZEKAC=1
 		while [ $CZEKAC -eq 1 ];
@@ -59,5 +90,8 @@ do
 		done
 
 	wget -O$NAZWA 'http://'$SERVER'/cgi-bin/rsapi.cgi?sub=download_v1&editparentlocation=0&bin=1&fileid='$NR'&filename='$NAZWA'&dlauth='$AUTH'#!download|'$SERVSHORT'|'$NR'|'$NAZWA'|'
+	afterSuccessfulDownloadingFile $PLIK
 	shift
 done
+
+afterAll $ALL
