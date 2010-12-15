@@ -8,13 +8,15 @@ echo "
 
 			*****************************
 			**         Qoobster        **
-			**         v 2.0.0         **
-			**         unstable        **
+			**         v 2.1.0         **
 			**   s6052@pjwstk.edu.pl   **
  			*****************************
 
 
 "
+
+# number of download attempts
+ATTEMPTS=3
 
 
 # function runs automatically after each successful download
@@ -58,11 +60,18 @@ do
 	echo -e " - plik:\n$PLIK"
 
 	CZEKAC=1
+	CURENTATEMPT=$ATTEMPTS
 		while [ $CZEKAC -eq 1 ];
 		do
 		ODP=`wget -q -O- "http://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=download_v1&fileid=$NR&filename=$NAZWA&try=1&cbf=RSAPIDispatcher&cbid=1"`
 
 			if [ `echo $ODP | grep "You need to wait" | wc -l` -eq 1 ] ; then 
+			
+				if [ $[ CURENTATEMPT - 1 ] -e 0 ] ; then
+				afterFailedDownloadingFile $PLIK
+				continue
+				fi
+			
 			TIME=`echo $ODP | cut -d" " -f5`
 				i=0
 				for (( i=1; i<=$TIME; i++ ))
