@@ -1,14 +1,14 @@
 #!/bin/bash
 
 #
-# change vars to english
+# add iPhone support
 #
 
 echo "
 
 			*****************************
 			**         Qoobster        **
-			**         v 2.1.2         **
+			**         v 2.2.0         **
 			**   s6052@pjwstk.edu.pl   **
  			*****************************
 
@@ -54,8 +54,9 @@ do
 
 	FILE=$1
 
-	NAME=`echo $FILE | rev | cut -d"/" -f1 | rev`
-	NR=`echo $FILE | rev | cut -d"/" -f2 | rev`
+	SLASHCOUNT=$[ `echo $FILE | wc -c` - `echo ${FILE///} | wc -c`  ]
+	NAME=`echo $FILE | cut -d'/' -f$[ SLASHCOUNT + 1 ]`
+	NR=`echo $FILE | cut -d'/' -f$SLASHCOUNT`
 
 	echo -e " - file:\n$FILE"
 
