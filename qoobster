@@ -1,14 +1,14 @@
 #!/bin/bash
 
 #
-# delete unnecessary wget params
+# change vars to english
 #
 
 echo "
 
 			*****************************
 			**         Qoobster        **
-			**         v 2.1.1         **
+			**         v 2.1.2         **
 			**   s6052@pjwstk.edu.pl   **
  			*****************************
 
@@ -52,29 +52,29 @@ true
 while  [ $# -ne 0 ] ;
 do	 	
 
-	PLIK=$1
+	FILE=$1
 
-	NAZWA=`echo $PLIK | rev | cut -d"/" -f1 | rev`
-	NR=`echo $PLIK | rev | cut -d"/" -f2 | rev`
+	NAME=`echo $FILE | rev | cut -d"/" -f1 | rev`
+	NR=`echo $FILE | rev | cut -d"/" -f2 | rev`
 
-	echo -e " - plik:\n$PLIK"
+	echo -e " - file:\n$FILE"
 
-	CZEKAC=1
+	WAIT=1
 	CURENTATEMPT=$ATTEMPTS
-		while [ $CZEKAC -eq 1 ];
+		while [ $WAIT -eq 1 ];
 		do
-		ODP=`wget -q -O- "http://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=download_v1&fileid=$NR&filename=$NAZWA&try=1&cbf=RSAPIDispatcher&cbid=1"`
+		RESPONSE=`wget -q -O- "http://api.rapidshare.com/cgi-bin/rsapi.cgi?sub=download_v1&fileid=$NR&filename=$NAME&try=1&cbf=RSAPIDispatcher&cbid=1"`
 
-			if [ `echo $ODP | grep "DL:" | wc -l` -ne 1 ] ; then 
+			if [ `echo $RESPONSE | grep "DL:" | wc -l` -ne 1 ] ; then 
 			
 				if [ $[ CURENTATEMPT - 1 ] -eq -1 ] ; then 
-				afterFailedDownloadingFile $PLIK
+				afterFailedDownloadingFile $FILE
 				shift
 				continue 2
 				fi
 			
 			
-			TIME=`echo $ODP | cut -d" " -f5`
+			TIME=`echo $RESPONSE | cut -d" " -f5`
 				# test czy integer
 				if [ "$TIME" -ne "$TIME" >& /dev/null ]; then 
 				TIME=300 #czekanie na zwolninie slotu, api nie daje info ile trza czekac ofc
@@ -88,14 +88,14 @@ do
 				done
 			echo ""
 			else
-			CZEKAC=0
+			WAIT=0
 			fi
 		done
 
 
-	SERVER=`echo $ODP | cut -d":" -f2 | cut -d"," -f1`
-	AUTH=`echo $ODP | cut -d":" -f2 | cut -d"," -f2`
-	TIME=`echo $ODP | cut -d":" -f2 | cut -d"," -f3`
+	SERVER=`echo $RESPONSE | cut -d":" -f2 | cut -d"," -f1`
+	AUTH=`echo $RESPONSE | cut -d":" -f2 | cut -d"," -f2`
+	TIME=`echo $RESPONSE | cut -d":" -f2 | cut -d"," -f3`
 
 		i=0
 		for (( i=1; i<=$TIME; i++ ))
@@ -104,8 +104,8 @@ do
 		echo -e -n "\r - czekam "$[ TIME - $i ]"s   "	
 		done
 
-	wget -O$NAZWA 'http://'$SERVER'/cgi-bin/rsapi.cgi?sub=download_v1&editparentlocation=0&bin=1&fileid='$NR'&filename='$NAZWA'&dlauth='$AUTH
-	afterSuccessfulDownloadingFile $PLIK
+	wget -O$NAME 'http://'$SERVER'/cgi-bin/rsapi.cgi?sub=download_v1&editparentlocation=0&bin=1&fileid='$NR'&filename='$NAME'&dlauth='$AUTH
+	afterSuccessfulDownloadingFile $FILE
 	shift
 done
 
