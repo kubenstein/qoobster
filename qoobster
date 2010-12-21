@@ -1,14 +1,14 @@
 #!/bin/bash
 
 #
-# add functions, attempts, waitng for free slot support
+# delete unnecessary wget params
 #
 
 echo "
 
 			*****************************
 			**         Qoobster        **
-			**         v 2.1.0         **
+			**         v 2.1.1         **
 			**   s6052@pjwstk.edu.pl   **
  			*****************************
 
@@ -96,7 +96,6 @@ do
 	SERVER=`echo $ODP | cut -d":" -f2 | cut -d"," -f1`
 	AUTH=`echo $ODP | cut -d":" -f2 | cut -d"," -f2`
 	TIME=`echo $ODP | cut -d":" -f2 | cut -d"," -f3`
-	SERVSHORT=`echo $SERVER | rev | cut -d"." -f1 | rev`
 
 		i=0
 		for (( i=1; i<=$TIME; i++ ))
@@ -105,7 +104,7 @@ do
 		echo -e -n "\r - czekam "$[ TIME - $i ]"s   "	
 		done
 
-	wget -O$NAZWA 'http://'$SERVER'/cgi-bin/rsapi.cgi?sub=download_v1&editparentlocation=0&bin=1&fileid='$NR'&filename='$NAZWA'&dlauth='$AUTH'#!download|'$SERVSHORT'|'$NR'|'$NAZWA'|'
+	wget -O$NAZWA 'http://'$SERVER'/cgi-bin/rsapi.cgi?sub=download_v1&editparentlocation=0&bin=1&fileid='$NR'&filename='$NAZWA'&dlauth='$AUTH
 	afterSuccessfulDownloadingFile $PLIK
 	shift
 done
