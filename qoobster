@@ -1,14 +1,14 @@
 #!/bin/bash
 
 #
-# add iPhone support
+# add iPhone support, little simpler
 #
 
 echo "
 
 			*****************************
 			**         Qoobster        **
-			**         v 2.2.0         **
+			**         v 2.2.1         **
 			**   s6052@pjwstk.edu.pl   **
  			*****************************
 
@@ -54,9 +54,8 @@ do
 
 	FILE=$1
 
-	SLASHCOUNT=$[ `echo $FILE | wc -c` - `echo ${FILE///} | wc -c`  ]
-	NAME=`echo $FILE | cut -d'/' -f$[ SLASHCOUNT + 1 ]`
-	NR=`echo $FILE | cut -d'/' -f$SLASHCOUNT`
+	NAME=`echo $FILE | cut -d'/' -f6`
+	NR=`echo $FILE | cut -d'/' -f5`
 
 	echo -e " - file:\n$FILE"
 
