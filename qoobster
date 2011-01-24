@@ -1,14 +1,14 @@
 #!/bin/bash
 
 #
-# add iPhone support, little simpler
+# fix free slot/flood warning wait time
 #
 
 echo "
 
 			*****************************
 			**         Qoobster        **
-			**         v 2.2.1         **
+			**         v 2.2.2         **
 			**   s6052@pjwstk.edu.pl   **
  			*****************************
 
@@ -76,8 +76,8 @@ do
 			
 			TIME=`echo $RESPONSE | cut -d" " -f5`
 				# test czy integer
-				if [ "$TIME" -ne "$TIME" >& /dev/null ]; then 
-				TIME=300 #czekanie na zwolninie slotu, api nie daje info ile trza czekac ofc
+				if ! [ "$TIME" -eq "$TIME" &>/dev/null ]; then
+				TIME=300 #czekanie na zwolninie slotu lub flood warning, api nie daje info ile trza czekac ofc
 				fi
 				
 				i=0
